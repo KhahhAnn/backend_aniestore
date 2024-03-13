@@ -13,10 +13,10 @@ import java.util.List;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/products")
 public class ProductController {
     private ProductService productService;
-    @GetMapping("/products")
+    @GetMapping("")
     public ResponseEntity<Page<Product>> findProductByCategoryHandle(@RequestParam String category,
                                                                      @RequestParam List<String> color,
                                                                      @RequestParam List<String> size,
@@ -31,7 +31,7 @@ public class ProductController {
         return new ResponseEntity<>(res, HttpStatus.ACCEPTED);
     }
 
-    @GetMapping("/products/id/{productId}")
+    @GetMapping("/id/{productId}")
     public ResponseEntity<Product> findProductByIdHandle(@PathVariable Long productId) throws ProductException {
         Product product = this.productService.findProductById(productId);
         return new ResponseEntity<>(product, HttpStatus.ACCEPTED);
