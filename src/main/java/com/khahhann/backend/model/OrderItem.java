@@ -29,7 +29,9 @@ public class OrderItem {
 
     private int quantity;
 
-    private Integer price;
+    private Double price;
+
+    private Double discountedPrice;
 
     @Column(name = "user_id")
     private Long userId;

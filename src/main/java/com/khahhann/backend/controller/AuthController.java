@@ -5,7 +5,7 @@ import com.khahhann.backend.exception.UserException;
 import com.khahhann.backend.model.Users;
 import com.khahhann.backend.repository.UserRepository;
 import com.khahhann.backend.request.LoginRequest;
-import com.khahhann.backend.responnse.AuthResponse;
+import com.khahhann.backend.response.AuthResponse;
 import com.khahhann.backend.service.impl.CustomerUserServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -52,7 +52,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> loginnUserHandle(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<AuthResponse> loginUserHandle(@RequestBody LoginRequest loginRequest) {
         String username = loginRequest.getEmail();
         String password = loginRequest.getPassword();
         Authentication authentication = authenticate(username, password);

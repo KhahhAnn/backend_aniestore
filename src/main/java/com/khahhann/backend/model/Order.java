@@ -19,6 +19,9 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Column(name = "order_id")
+    private String orderId;
+
     @ManyToOne
     private Users user;
 
@@ -39,11 +42,11 @@ public class Order {
 
     private double totalPrice;
 
-    private Integer totalDiscountedPrice;
+    private Double totalDiscountedPrice;
 
-    private Integer discount;
+    private Double discount;
 
-    private String OrderStatus;
+    private String orderStatus;
 
     private int totalItem;
 
