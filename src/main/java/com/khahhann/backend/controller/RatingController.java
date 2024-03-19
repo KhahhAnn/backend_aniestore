@@ -17,6 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/ratings")
+@CrossOrigin("http://localhost:3000/")
 public class RatingController {
     private UserService userService;
     private RatingService ratingService;

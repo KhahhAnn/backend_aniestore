@@ -19,6 +19,7 @@ import java.util.List;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/reviews")
+@CrossOrigin("http://localhost:3000/")
 public class ReviewController {
     private ReviewService reviewService;
     private UserService userService;

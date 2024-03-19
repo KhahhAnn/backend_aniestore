@@ -14,6 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/products")
+@CrossOrigin("http://localhost:3000/")
 public class ProductController {
     private ProductService productService;
     @GetMapping("")
@@ -31,7 +32,7 @@ public class ProductController {
         return new ResponseEntity<>(res, HttpStatus.ACCEPTED);
     }
 
-    @GetMapping("/id/{productId}")
+    @GetMapping("/{productId}")
     public ResponseEntity<Product> findProductByIdHandle(@PathVariable Long productId) throws ProductException {
         Product product = this.productService.findProductById(productId);
         return new ResponseEntity<>(product, HttpStatus.ACCEPTED);

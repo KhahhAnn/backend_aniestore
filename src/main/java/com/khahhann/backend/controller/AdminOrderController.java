@@ -14,6 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/admin/orders")
+@CrossOrigin("http://localhost:3000/")
 public class AdminOrderController {
     private OrderService orderService;
     @GetMapping("")

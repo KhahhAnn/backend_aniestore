@@ -60,7 +60,7 @@ public class ProductServiceImpl implements ProductService {
         product.setDiscountedPrice(productRequest.getDiscountedPrice());
         product.setDiscountPercent(productRequest.getDiscountPercent());
         product.setPrice(productRequest.getPrice());
-        product.setSizes(productRequest.getSizes());
+        product.setSizes(productRequest.getSize());
         product.setQuantity(productRequest.getQuantity());
         product.setCategory(thirdLevel);
         product.setCreatedAt(LocalDateTime.now());

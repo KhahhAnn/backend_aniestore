@@ -1,6 +1,7 @@
 package com.khahhann.backend.service.impl;
 
 import com.khahhann.backend.exception.ProductException;
+import com.khahhann.backend.exception.UserException;
 import com.khahhann.backend.model.Cart;
 import com.khahhann.backend.model.CartItem;
 import com.khahhann.backend.model.Product;
@@ -10,6 +11,7 @@ import com.khahhann.backend.request.AddItemRequest;
 import com.khahhann.backend.service.CartItemService;
 import com.khahhann.backend.service.CartService;
 import com.khahhann.backend.service.ProductService;
+import com.khahhann.backend.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,7 @@ public class CartServiceImpl implements CartService {
     private CartRepository cartRepository;
     private CartItemService cartItemService;
     private ProductService productService;
+    private UserService userService;
     @Override
     public Cart creatCart(Users user) {
         Cart cart = new Cart();
@@ -28,8 +31,12 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public String addCartItem(Long userId, AddItemRequest req) throws ProductException {
+    public String addCartItem(Long userId, AddItemRequest req) throws ProductException, UserException {
         Cart cart = this.cartRepository.findByUserId(userId);
+        if(cart == null) {
+            Users user = this.userService.findUserById(userId);
+            cart = this.creatCart(user);
+        }
         Product product = this.productService.findProductById(req.getProductId());
         CartItem isPresent = this.cartItemService.isCartItemExist(cart, product, req.getSize(), userId);
         if(isPresent == null) {
@@ -42,7 +49,7 @@ public class CartServiceImpl implements CartService {
             cartItem.setPrice(price);
             cartItem.setSize(req.getSize());
             CartItem createdCartItem = this.cartItemService.createCartItem(cartItem);
-            cart.getCartItems().add(createdCartItem);
+            cart.getCartItem().add(createdCartItem);
         }
         return "Item add to cart";
     }
@@ -50,10 +57,11 @@ public class CartServiceImpl implements CartService {
     @Override
     public Cart findUserCart(Long userId) {
         Cart cart = this.cartRepository.findByUserId(userId);
+        System.out.println(cart);
         double totalPrice = 0;
         double totalDiscountedPrice = 0;
         int totalItem = 0;
-        for(CartItem cartItem : cart.getCartItems()) {
+        for(CartItem cartItem : cart.getCartItem()) {
             totalPrice = totalPrice + cartItem.getPrice();
             totalDiscountedPrice = totalDiscountedPrice + cartItem.getDiscountedPrice();
             totalItem = totalItem + cartItem.getQuantity();

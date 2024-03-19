@@ -3,7 +3,6 @@ package com.khahhann.backend.controller;
 import com.khahhann.backend.constant.Status;
 import com.khahhann.backend.exception.OrderException;
 import com.khahhann.backend.model.Order;
-import com.khahhann.backend.model.Rating;
 import com.khahhann.backend.repository.OrderRepository;
 import com.khahhann.backend.response.ApiResponse;
 import com.khahhann.backend.service.OrderService;
@@ -12,8 +11,6 @@ import com.razorpay.Payment;
 import com.razorpay.PaymentLink;
 import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
+@CrossOrigin("http://localhost:3000/")
 public class PaymentController {
     @Value("${razorpay.api.key}")
     private String apiKey;

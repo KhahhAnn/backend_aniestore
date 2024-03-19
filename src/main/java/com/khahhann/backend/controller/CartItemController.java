@@ -3,7 +3,6 @@ package com.khahhann.backend.controller;
 import com.khahhann.backend.exception.CartItemException;
 import com.khahhann.backend.exception.ProductException;
 import com.khahhann.backend.exception.UserException;
-import com.khahhann.backend.model.Cart;
 import com.khahhann.backend.model.CartItem;
 import com.khahhann.backend.model.Users;
 import com.khahhann.backend.request.AddItemRequest;
@@ -18,7 +17,8 @@ import org.springframework.web.bind.annotation.*;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/api/cart-item")
+@RequestMapping("/api/cart-items")
+@CrossOrigin("http://localhost:3000/")
 public class CartItemController {
     private UserService userService;
     private CartItemService cartItemService;
@@ -42,17 +42,6 @@ public class CartItemController {
         Users user = this.userService.findUserProfileByJwt(jwt);
         CartItem updateCartItem = this.cartItemService.updateCartItem(user.getId(), cartItemId, cartItem);
         return new ResponseEntity<>(updateCartItem, HttpStatus.OK);
-    }
-
-    @PutMapping("/add")
-    public ResponseEntity<ApiResponse> addItemToCart(@RequestBody AddItemRequest req,
-                                                     @RequestHeader("Authorization") String jwt) throws  UserException, ProductException {
-        Users user = this.userService.findUserProfileByJwt(jwt);
-        this.cartService.addCartItem(user.getId(), req);
-        ApiResponse res = new ApiResponse();
-        res.setMessage("Item added to cart");
-        res.setStatus(true);
-        return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
 }

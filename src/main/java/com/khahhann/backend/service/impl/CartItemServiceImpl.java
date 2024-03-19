@@ -27,7 +27,6 @@ public class CartItemServiceImpl implements CartItemService {
         cartItem.setPrice(cartItem.getProduct().getPrice() * cartItem.getQuantity());
         cartItem.setDiscountedPrice(cartItem.getProduct().getDiscountedPrice() * cartItem.getQuantity());
         CartItem createdCartItem = this.cartItemRepository.saveAndFlush(cartItem);
-
         return createdCartItem;
     }
 

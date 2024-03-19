@@ -17,11 +17,12 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/orders")
+@CrossOrigin("http://localhost:3000/")
 public class OrderController {
     private OrderService orderService;
     private UserService userService;
 
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity<Order> createOrder(@RequestBody Address shippingAddress, @RequestHeader("Authorization") String jwt) throws UserException {
         Users user = this.userService.findUserProfileByJwt(jwt);
         Order order = this.orderService.createOrder(user, shippingAddress);

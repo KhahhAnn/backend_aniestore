@@ -25,7 +25,6 @@ public class OrderServiceImpl implements OrderService {
     private CartService cartService;
     private AddressRepository addressRepository;
     private UserRepository userRepository;
-    private OrderItemService orderItemService;
     private OrderItemRepository orderItemRepository;
     @Override
     public Order createOrder(Users user, Address shippingAddress) {
@@ -35,7 +34,7 @@ public class OrderServiceImpl implements OrderService {
         this.userRepository.saveAndFlush(user);
         Cart cart = this.cartService.findUserCart(user.getId());
         List<OrderItem> orderItems = new ArrayList<>();
-        for(CartItem item : cart.getCartItems()) {
+        for(CartItem item : cart.getCartItem()) {
             OrderItem orderItem = new OrderItem();
             orderItem.setPrice(item.getPrice());
             orderItem.setProduct(item.getProduct());

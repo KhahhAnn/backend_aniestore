@@ -18,11 +18,12 @@ import org.springframework.web.bind.annotation.*;
 @Data
 @RestController
 @RequestMapping("/api/cart")
+@CrossOrigin("http://localhost:3000/")
 public class CartController {
     private CartService cartService;
     private UserService userService;
 
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<Cart> findUserCart(@RequestHeader("Authorization") String jwt) throws UserException {
         Users user = this.userService.findUserProfileByJwt(jwt);
         Cart cart = this.cartService.findUserCart(user.getId());
@@ -32,8 +33,8 @@ public class CartController {
     @PutMapping("/add")
     public ResponseEntity<ApiResponse> addItemToCart(@RequestBody AddItemRequest req,
                                               @RequestHeader("Authorization") String jwt) throws UserException, ProductException {
-        Users users = this.userService.findUserProfileByJwt(jwt);
-        this.cartService.addCartItem(users.getId(), req);
+        Users user = this.userService.findUserProfileByJwt(jwt);
+        this.cartService.addCartItem(user.getId(), req);
         ApiResponse res = new ApiResponse();
         res.setMessage("Products created successfully");
         res.setStatus(true);
