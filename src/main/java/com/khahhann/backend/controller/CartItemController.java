@@ -15,10 +15,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin("http://localhost:3000/")
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/cart-items")
-@CrossOrigin("http://localhost:3000/")
 public class CartItemController {
     private UserService userService;
     private CartItemService cartItemService;
@@ -30,7 +30,7 @@ public class CartItemController {
         Users user = this.userService.findUserProfileByJwt(jwt);
         this.cartItemService.removeCartItem(user.getId(), cartItemId);
         ApiResponse res = new ApiResponse();
-        res.setMessage("Item added to cart");
+        res.setMessage("Item delete to cart");
         res.setStatus(true);
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
