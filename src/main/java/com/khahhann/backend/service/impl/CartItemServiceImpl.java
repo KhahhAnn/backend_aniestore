@@ -9,7 +9,6 @@ import com.khahhann.backend.model.Users;
 import com.khahhann.backend.repository.CartItemRepository;
 import com.khahhann.backend.service.CartItemService;
 import com.khahhann.backend.service.UserService;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -48,17 +47,10 @@ public class CartItemServiceImpl implements CartItemService {
     }
 
     @Override
-    public void removeCartItem(Long userId, Long cartItemId) throws CartItemException, UserException {
+    public CartItem removeCartItem(Long cartItemId) throws CartItemException {
         CartItem item = this.findCartItemById(cartItemId);
-        Users user = this.userService.findUserById(item.getUserId());
-        Users reqUser = this.userService.findUserById(userId);
-        System.out.println(reqUser.getId());
-            this.cartItemRepository.deleteById(cartItemId);
-        if(user.getId().equals(reqUser.getId())) {
-            this.cartItemRepository.deleteById(cartItemId);
-        } else {
-            throw new UserException("You can't remove another user item");
-        }
+         this.cartItemRepository.delete(item);
+         return item;
     }
 
     @Override
@@ -69,4 +61,6 @@ public class CartItemServiceImpl implements CartItemService {
         }
         throw new CartItemException("CartItem not fount with id - " + cartItemId);
     }
+
+
 }

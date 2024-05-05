@@ -10,16 +10,17 @@ import java.util.List;
 
 @Service
 public interface OrderService {
-    public Order createOrder(Users user, Address shippingAddress);
-    public Order findOrderById(Long orderId) throws OrderException;
-    public List<Order> userOrderHistory(Long userId);
-    public Order placedOrder(Long orderId) throws OrderException;
-    public Order confirmOrder(Long orderId) throws OrderException;
-    public Order shippedOrder(Long orderId) throws OrderException;
-    public Order deliveredOrder(Long orderId) throws OrderException;
-    public Order cancelOrder(Long orderId) throws OrderException;
-    public List<Order> getAllOrder();
-    public void deleteOrder(Long orderId) throws OrderException;
+     Order createOrder(Users user, Address shippingAddress);
+     Order createOrderByAddress(Users user, Address shippingAddress);
+     Order findOrderById(Long orderId) throws OrderException;
+     List<Order> userOrderHistory(Long userId);
+     Order placedOrder(Long orderId) throws OrderException;
+     Order confirmOrder(Long orderId) throws OrderException;
+     Order shippedOrder(Long orderId) throws OrderException;
+     Order deliveredOrder(Long orderId) throws OrderException;
+     Order cancelOrder(Long orderId) throws OrderException;
+     List<Order> getAllOrder();
+     void deleteOrder(Long orderId) throws OrderException;
 
 
 }

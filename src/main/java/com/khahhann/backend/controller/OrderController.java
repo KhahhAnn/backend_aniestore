@@ -28,6 +28,12 @@ public class OrderController {
         Order order = this.orderService.createOrder(user, shippingAddress);
         return new ResponseEntity<>(order, HttpStatus.CREATED);
     }
+    @PostMapping("/data-address")
+    public ResponseEntity<Order> createOrderByDataAddress(@RequestBody Address shippingAddress, @RequestHeader("Authorization") String jwt) throws UserException {
+        Users user = this.userService.findUserProfileByJwt(jwt);
+        Order order = this.orderService.createOrderByAddress(user, shippingAddress);
+        return new ResponseEntity<>(order, HttpStatus.CREATED);
+    }
     @GetMapping("/user")
     public ResponseEntity<List<Order>> userOrderHistory(@RequestHeader("Authorization") String jwt) throws UserException{
         Users user = this.userService.findUserProfileByJwt(jwt);

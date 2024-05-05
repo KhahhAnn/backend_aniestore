@@ -73,4 +73,10 @@ public class CartServiceImpl implements CartService {
 
         return this.cartRepository.saveAndFlush(cart);
     }
+
+    @Override
+    public int countCartItem(Long userId) {
+        Cart cart = this.findUserCart(userId);
+        return cart.getTotalItem();
+    }
 }

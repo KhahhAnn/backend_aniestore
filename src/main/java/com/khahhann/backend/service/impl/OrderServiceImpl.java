@@ -67,6 +67,41 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public Order createOrderByAddress(Users user, Address shippingAddress) {
+        Cart cart = this.cartService.findUserCart(user.getId());
+        List<OrderItem> orderItems = new ArrayList<>();
+        for(CartItem item : cart.getCartItem()) {
+            OrderItem orderItem = new OrderItem();
+            orderItem.setPrice(item.getPrice());
+            orderItem.setProduct(item.getProduct());
+            orderItem.setQuantity(item.getQuantity());
+            orderItem.setSize(item.getSize());
+            orderItem.setUserId(item.getUserId());
+            orderItem.setDiscountedPrice(item.getDiscountedPrice());
+            OrderItem createdOrderItem = this.orderItemRepository.saveAndFlush(orderItem);
+            orderItems.add(createdOrderItem);
+        }
+        Order createdOrder = new Order();
+        createdOrder.setUser(user);
+        createdOrder.setOrderItems(orderItems);
+        createdOrder.setTotalItem(cart.getTotalItem());
+        createdOrder.setTotalDiscountedPrice(cart.getTotalDiscountedPrice());
+        createdOrder.setDiscount(createdOrder.getDiscount());
+        createdOrder.setShippingAddress(shippingAddress);
+        createdOrder.setOrderDate(LocalDateTime.now());
+        createdOrder.setOrderStatus(Status.PENDING);
+        createdOrder.getPaymentDetails().setStatus(Status.PENDING);
+        createdOrder.setCreatedAt(LocalDateTime.now());
+
+        Order savedOrder = this.orderRepository.saveAndFlush(createdOrder);
+        for(OrderItem item : orderItems) {
+            item.setOrder(savedOrder);
+            this.orderItemRepository.saveAndFlush(item);
+        }
+        return savedOrder;
+    }
+
+    @Override
     public Order findOrderById(Long orderId) throws OrderException {
         Optional<Order> opt = this.orderRepository.findById(orderId);
         if (opt.isPresent()) {
@@ -121,6 +156,7 @@ public class OrderServiceImpl implements OrderService {
     public List<Order> getAllOrder() {
         return this.orderRepository.findAll();
     }
+
 
     @Override
     public void deleteOrder(Long orderId) throws OrderException {
