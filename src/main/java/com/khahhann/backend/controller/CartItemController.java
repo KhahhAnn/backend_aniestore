@@ -26,11 +26,9 @@ public class CartItemController {
 
     @DeleteMapping("/{cartItemId}")
     public ResponseEntity<ApiResponse> deleteCartItem(@PathVariable Long cartItemId) throws CartItemException {
-        CartItem item = this.cartItemService.removeCartItem(cartItemId);
+        this.cartItemService.removeCartItem(cartItemId);
         ApiResponse res = new ApiResponse();
-        if(item != null) {
-            res.setMessage("Delete complete");
-        }
+        res.setMessage("Delete complete");
         res.setStatus(true);
         return new ResponseEntity<>(res, HttpStatus.OK);
     }

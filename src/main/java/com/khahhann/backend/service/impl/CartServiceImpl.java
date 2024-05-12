@@ -38,13 +38,12 @@ public class CartServiceImpl implements CartService {
             cart = this.creatCart(user);
         }
         Product product = this.productService.findProductById(req.getProductId());
-        CartItem isPresent = this.cartItemService.isCartItemExist(cart, product, req.getSize(), userId);
+        CartItem isPresent = this.cartItemService.isCartItemExist(cart, product, req.getSize());
         if(isPresent == null) {
             CartItem cartItem = new CartItem();
             cartItem.setProduct(product);
             cartItem.setCart(cart);
             cartItem.setQuantity(req.getQuantity());
-            cartItem.setUserId(userId);
             double price = req.getQuantity() * product.getDiscountedPrice();
             cartItem.setPrice(price);
             cartItem.setSize(req.getSize());
@@ -57,7 +56,6 @@ public class CartServiceImpl implements CartService {
     @Override
     public Cart findUserCart(Long userId) {
         Cart cart = this.cartRepository.findByUserId(userId);
-        System.out.println(cart);
         double totalPrice = 0;
         double totalDiscountedPrice = 0;
         int totalItem = 0;

@@ -42,13 +42,10 @@ public class CartController {
     }
 
     @GetMapping("/count")
-    public ResponseEntity<ApiResponse> countCartItems(@RequestHeader("Authorization") String jwt) throws UserException{
+    public ResponseEntity<?> countCartItems(@RequestHeader("Authorization") String jwt) throws UserException{
         Users user = this.userService.findUserProfileByJwt(jwt);
         int quantity = this.cartService.countCartItem(user.getId());
-        ApiResponse res = new ApiResponse();
-        res.setMessage(quantity + "cart item");
-        res.setStatus(true);
-        return new ResponseEntity<>(res, HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(quantity);
     }
 
 }

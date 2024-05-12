@@ -40,7 +40,6 @@ public class OrderServiceImpl implements OrderService {
             orderItem.setProduct(item.getProduct());
             orderItem.setQuantity(item.getQuantity());
             orderItem.setSize(item.getSize());
-            orderItem.setUserId(item.getUserId());
             orderItem.setDiscountedPrice(item.getDiscountedPrice());
 
             OrderItem createdOrderItem = this.orderItemRepository.saveAndFlush(orderItem);
@@ -55,7 +54,6 @@ public class OrderServiceImpl implements OrderService {
         createdOrder.setShippingAddress(address);
         createdOrder.setOrderDate(LocalDateTime.now());
         createdOrder.setOrderStatus(Status.PENDING);
-        createdOrder.getPaymentDetails().setStatus(Status.PENDING);
         createdOrder.setCreatedAt(LocalDateTime.now());
 
         Order savedOrder = this.orderRepository.saveAndFlush(createdOrder);
@@ -76,7 +74,6 @@ public class OrderServiceImpl implements OrderService {
             orderItem.setProduct(item.getProduct());
             orderItem.setQuantity(item.getQuantity());
             orderItem.setSize(item.getSize());
-            orderItem.setUserId(item.getUserId());
             orderItem.setDiscountedPrice(item.getDiscountedPrice());
             OrderItem createdOrderItem = this.orderItemRepository.saveAndFlush(orderItem);
             orderItems.add(createdOrderItem);
@@ -90,7 +87,6 @@ public class OrderServiceImpl implements OrderService {
         createdOrder.setShippingAddress(shippingAddress);
         createdOrder.setOrderDate(LocalDateTime.now());
         createdOrder.setOrderStatus(Status.PENDING);
-        createdOrder.getPaymentDetails().setStatus(Status.PENDING);
         createdOrder.setCreatedAt(LocalDateTime.now());
 
         Order savedOrder = this.orderRepository.saveAndFlush(createdOrder);
@@ -112,15 +108,13 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Order> userOrderHistory(Long userId) {
-        List<Order> orders = this.orderRepository.getUserOrders(userId);
-        return orders;
+        return this.orderRepository.getUserOrders(userId);
     }
 
     @Override
     public Order placedOrder(Long orderId) throws OrderException {
         Order order = this.findOrderById(orderId);
         order.setOrderStatus(Status.PLACED);
-        order.getPaymentDetails().setStatus(Status.COMPLETED);
         return order;
     }
 
@@ -160,7 +154,6 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void deleteOrder(Long orderId) throws OrderException {
-        Order order = this.findOrderById(orderId);
         this.orderRepository.deleteById(orderId);
 
     }

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 public interface CartItemService {
     public CartItem createCartItem(CartItem cartItem);
     public CartItem updateCartItem(Long userId, Long id, CartItem cartItem) throws CartItemException, UserException;
-    public CartItem isCartItemExist(Cart cart, Product product, String size, Long userId);
-    public CartItem removeCartItem(Long cartItemId) throws CartItemException;
+    public CartItem isCartItemExist(Cart cart, Product product, String size);
+    public void removeCartItem(Long cartItemId) throws CartItemException;
     public CartItem findCartItemById(Long cartItemId) throws CartItemException;
 }

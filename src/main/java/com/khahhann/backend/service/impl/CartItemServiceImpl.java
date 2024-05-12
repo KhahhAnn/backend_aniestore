@@ -5,12 +5,11 @@ import com.khahhann.backend.exception.UserException;
 import com.khahhann.backend.model.Cart;
 import com.khahhann.backend.model.CartItem;
 import com.khahhann.backend.model.Product;
-import com.khahhann.backend.model.Users;
 import com.khahhann.backend.repository.CartItemRepository;
 import com.khahhann.backend.service.CartItemService;
-import com.khahhann.backend.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -18,39 +17,37 @@ import java.util.Optional;
 @Service
 public class CartItemServiceImpl implements CartItemService {
     private CartItemRepository cartItemRepository;
-    private UserService userService;
     @Override
     public CartItem createCartItem(CartItem cartItem) {
         cartItem.setQuantity(1);
         cartItem.setPrice(cartItem.getProduct().getPrice() * cartItem.getQuantity());
         cartItem.setDiscountedPrice(cartItem.getProduct().getDiscountedPrice() * cartItem.getQuantity());
-        CartItem createdCartItem = this.cartItemRepository.saveAndFlush(cartItem);
-        return createdCartItem;
+        return this.cartItemRepository.saveAndFlush(cartItem);
     }
 
     @Override
     public CartItem updateCartItem(Long userId, Long id, CartItem cartItem) throws CartItemException, UserException {
         CartItem item = this.findCartItemById(id);
-        Users user = this.userService.findUserById(item.getUserId());
-        if(user.getId().equals(userId)) {
-            item.setQuantity(cartItem.getQuantity());
-            item.setPrice(item.getQuantity() * item.getProduct().getPrice());
-            item.setDiscountedPrice(item.getQuantity() * item.getProduct().getDiscountedPrice());
-        }
+        item.setQuantity(cartItem.getQuantity());
+        item.setPrice(item.getQuantity() * item.getProduct().getPrice());
+        item.setDiscountedPrice(item.getQuantity() * item.getProduct().getDiscountedPrice());
         return this.cartItemRepository.saveAndFlush(item);
     }
 
     @Override
-    public CartItem isCartItemExist(Cart cart, Product product, String size, Long userId) {
-        CartItem cartItem = this.cartItemRepository.isCartItemExist(cart, product, size, userId);
-        return cartItem;
+    public CartItem isCartItemExist(Cart cart, Product product, String size) {
+        return this.cartItemRepository.isCartItemExist(cart, product, size);
     }
 
+    @Transactional
     @Override
-    public CartItem removeCartItem(Long cartItemId) throws CartItemException {
-        CartItem item = this.findCartItemById(cartItemId);
-         this.cartItemRepository.delete(item);
-         return item;
+    public void removeCartItem(Long cartItemId) throws CartItemException {
+          CartItem cartItem = this.findCartItemById(cartItemId);
+        if (cartItem != null) {
+            this.cartItemRepository.deleteCartItemById(cartItemId);
+        } else {
+            throw new CartItemException("Cart item not found");
+        }
     }
 
     @Override
