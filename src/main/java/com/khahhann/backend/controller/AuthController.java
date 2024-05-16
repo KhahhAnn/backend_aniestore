@@ -6,6 +6,7 @@ import com.khahhann.backend.model.Users;
 import com.khahhann.backend.repository.UserRepository;
 import com.khahhann.backend.request.LoginRequest;
 import com.khahhann.backend.response.AuthResponse;
+import com.khahhann.backend.service.AccountService;
 import com.khahhann.backend.service.impl.CustomerUserServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,37 +17,29 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @AllArgsConstructor
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin("http://localhost:3000/")
+@CrossOrigin("**")
 public class AuthController {
     private CustomerUserServiceImpl userService;
-    private UserRepository userRepository;
+    private AccountService accountService;
     private JwtProvider jwtProvider;
     private PasswordEncoder passwordEncoder;
 
-    @PostMapping("/signup")
-    public ResponseEntity<AuthResponse> createUserHandle(@RequestBody Users user) throws UserException {
-        Users isEmailExist = this.userRepository.findByEmail(user.getEmail());
-        if(isEmailExist != null) {
-            throw new UserException("Email is already used with another account");
-        }
-        Users createdUser = new Users();
-        createdUser.setEmail(user.getEmail());
-        createdUser.setPassword(passwordEncoder.encode(user.getPassword()));
-        createdUser.setFirstName(user.getFirstName());
-        createdUser.setLastName(user.getLastName());
+    @PostMapping("/register")
+    public ResponseEntity<?> registerUser(@Validated @RequestBody Users user) {
+        ResponseEntity<?> response = this.accountService.register(user);
+        return response;
+    }
 
-        Users saveUser = this.userRepository.saveAndFlush(createdUser);
-
-        Authentication authentication = new UsernamePasswordAuthenticationToken(saveUser.getEmail(), saveUser.getPassword());
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String token = this.jwtProvider.generateToken(authentication);
-        AuthResponse authResponse = new AuthResponse(token, "Signup success");
-        return new ResponseEntity<AuthResponse>(authResponse, HttpStatus.CREATED);
+    @GetMapping("/active/{email}/{activeCode}")
+    public ResponseEntity<?> active(@PathVariable String email, @PathVariable String activeCode) {
+        ResponseEntity<?> response = this.accountService.activeAccount(email, activeCode);
+        return response;
     }
 
     @PostMapping("/login")
@@ -61,6 +54,9 @@ public class AuthController {
     }
 
     private Authentication authenticate(String username, String password) {
+        if(!this.accountService.isActiveAccount(username)) {
+            return null;
+        }
         UserDetails userDetails = this.userService.loadUserByUsername(username);
         if(userDetails == null) {
             throw new BadCredentialsException("Invalid username");

@@ -40,9 +40,8 @@ public class CartController {
         res.setStatus(true);
         return new ResponseEntity<>(res, HttpStatus.CREATED);
     }
-
     @GetMapping("/count")
-    public ResponseEntity<?> countCartItems(@RequestHeader("Authorization") String jwt) throws UserException{
+    public ResponseEntity<Integer> countCartItems(@RequestHeader("Authorization") String jwt) throws UserException{
         Users user = this.userService.findUserProfileByJwt(jwt);
         int quantity = this.cartService.countCartItem(user.getId());
         return ResponseEntity.status(HttpStatus.OK).body(quantity);

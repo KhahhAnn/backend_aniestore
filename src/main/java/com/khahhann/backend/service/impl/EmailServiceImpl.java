@@ -3,14 +3,13 @@ package com.khahhann.backend.service.impl;
 import com.khahhann.backend.service.EmailService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 
+import lombok.AllArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-@Data
+@AllArgsConstructor
 @Service
 public class EmailServiceImpl implements EmailService {
     private JavaMailSender mailSender;

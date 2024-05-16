@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 
@@ -34,11 +35,14 @@ public class Users {
     @Column(name = "email")
     private String email;
 
-    @Column(name = "role")
-    private String role;
-
     @Column(name = "phone_number")
     private String mobile;
+
+    @Column(name = "is_active", nullable = false)
+    private boolean isActive;
+
+    @Column(name = "active_code", nullable = false)
+    private String activeCode;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Address> addressList = new ArrayList<>();
@@ -51,6 +55,7 @@ public class Users {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Review> reviewList = new ArrayList<>();
 
+    @JsonIgnore
     @ManyToMany(cascade = {
             CascadeType.DETACH,
             CascadeType.MERGE,
@@ -75,7 +80,7 @@ public class Users {
     private Images image;
 
     @Column(name = "created_at")
-    @CreatedDate
+    @CreationTimestamp
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
