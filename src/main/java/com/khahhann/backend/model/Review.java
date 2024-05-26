@@ -5,7 +5,11 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -15,10 +19,13 @@ import java.time.LocalDateTime;
 @Table(name = "review")
 public class Review {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String review;
+
+    @Column(name = "stars_number")
+    private Double starsNumber;
 
     @ManyToOne
     @JoinColumn(name = "product_id")
@@ -30,8 +37,10 @@ public class Review {
     private Users user;
 
     @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    @CreationTimestamp
+    private LocalDate createdAt;
 
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    @UpdateTimestamp
+    private LocalDate updatedAt;
 }

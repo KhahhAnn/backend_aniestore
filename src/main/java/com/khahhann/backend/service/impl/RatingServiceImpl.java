@@ -11,6 +11,7 @@ import com.khahhann.backend.service.RatingService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class RatingServiceImpl implements RatingService {
         rating.setRating(req.getRating());
         rating.setUser(user);
         rating.setProduct(product);
-        rating.setCreatedAt(LocalDateTime.now());
+        rating.setCreatedAt(LocalDate.now());
 
         return this.ratingRepository.saveAndFlush(rating);
     }

@@ -5,17 +5,21 @@ import com.khahhann.backend.model.Product;
 import com.khahhann.backend.model.Review;
 import com.khahhann.backend.model.Users;
 import com.khahhann.backend.repository.ReviewRepository;
+import com.khahhann.backend.repository.UserRepository;
 import com.khahhann.backend.request.ReviewRequest;
 import com.khahhann.backend.service.ProductService;
 import com.khahhann.backend.service.ReviewService;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class ReviewServiceImpl implements ReviewService {
     private ReviewRepository reviewRepository;
     private ProductService productService;
+    private UserRepository userRepository;
     @Override
     public Review createReview(ReviewRequest req, Users user) throws ProductException {
         Product product = this.productService.findProductById(req.getProductId());
@@ -28,7 +32,12 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public List<Review> getProductsReview(Long ProductId) {
-        return this.reviewRepository.getAllProductReview(ProductId);
+    public List<Review> getProductsReview(Long id) {
+        return this.reviewRepository.getAllProductReview(id);
+    }
+
+    @Override
+    public Users getUserReview(Long id) {
+        return this.userRepository.getReferenceById(id);
     }
 }

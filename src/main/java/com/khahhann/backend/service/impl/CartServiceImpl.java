@@ -13,7 +13,13 @@ import com.khahhann.backend.service.CartService;
 import com.khahhann.backend.service.ProductService;
 import com.khahhann.backend.service.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -54,27 +60,21 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public Cart findUserCart(Long userId) {
+    public Page<CartItem> findUserCart(Long userId, int pageNumber, int pageSize) {
         Cart cart = this.cartRepository.findByUserId(userId);
-        double totalPrice = 0;
-        double totalDiscountedPrice = 0;
-        int totalItem = 0;
-        for(CartItem cartItem : cart.getCartItem()) {
-            totalPrice = totalPrice + cartItem.getPrice();
-            totalDiscountedPrice = totalDiscountedPrice + cartItem.getDiscountedPrice();
-            totalItem = totalItem + cartItem.getQuantity();
-        }
-        cart.setTotalItem(totalItem);
-        cart.setTotalPrice(totalPrice);
-        cart.setTotalDiscountedPrice(totalDiscountedPrice);
-        cart.setDiscount(totalDiscountedPrice - totalDiscountedPrice);
-
-        return this.cartRepository.saveAndFlush(cart);
+        List<CartItem> cartItems = cart.getCartItem();
+        Collections.sort(cartItems, Comparator.comparing(CartItem::getId));
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        int startIndex = (int) pageable.getOffset();
+        int endIndex = Math.min(startIndex + pageable.getPageSize(), cartItems.size());
+        List<CartItem> pageContent  = cartItems.subList(startIndex, endIndex);
+        Page<CartItem> pageCartItem = new PageImpl<>(pageContent, pageable, cartItems.size());
+        return pageCartItem;
     }
 
     @Override
     public int countCartItem(Long userId) {
-        Cart cart = this.findUserCart(userId);
+        Cart cart = this.cartRepository.findByUserId(userId);
         return cart.getTotalItem();
     }
 }

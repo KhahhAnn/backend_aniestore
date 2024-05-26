@@ -6,7 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -22,7 +24,7 @@ public class Cart {
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @Column(name = "cart_item")
-    private Set<CartItem> cartItem = new HashSet<>();
+    private List<CartItem> cartItem = new ArrayList<>();
 
     @Column(name = "total_price")
     private double totalPrice;
@@ -50,11 +52,11 @@ public class Cart {
         this.user = user;
     }
 
-    public Set<CartItem> getCartItem() {
+    public List<CartItem> getCartItem() {
         return cartItem;
     }
 
-    public void setCartItem(Set<CartItem> cartItem) {
+    public void setCartItem(List<CartItem> cartItem) {
         this.cartItem = cartItem;
     }
 
@@ -90,7 +92,7 @@ public class Cart {
         this.discount = discount;
     }
 
-    public Cart(Long id, Users user, Set<CartItem> cartItem, double totalPrice, int totalItem, double totalDiscountedPrice, double discount) {
+    public Cart(Long id, Users user, List<CartItem> cartItem, double totalPrice, int totalItem, double totalDiscountedPrice, double discount) {
         this.id = id;
         this.user = user;
         this.cartItem = cartItem;

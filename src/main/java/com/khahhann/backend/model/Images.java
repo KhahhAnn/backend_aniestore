@@ -17,6 +17,7 @@ import java.util.UUID;
 public class Images {
     @Id
     @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
     @Column(name = "image_name")
@@ -40,12 +41,4 @@ public class Images {
     }, fetch = FetchType.EAGER)
     @JoinColumn(name = "products_id")
     private Product product;
-
-    @OneToMany(
-            mappedBy = "image",
-            fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL
-    )
-    private List<Users> userList;
-
 }

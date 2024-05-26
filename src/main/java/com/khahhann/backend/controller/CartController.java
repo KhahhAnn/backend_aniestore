@@ -3,6 +3,7 @@ package com.khahhann.backend.controller;
 import com.khahhann.backend.exception.ProductException;
 import com.khahhann.backend.exception.UserException;
 import com.khahhann.backend.model.Cart;
+import com.khahhann.backend.model.CartItem;
 import com.khahhann.backend.model.Users;
 import com.khahhann.backend.request.AddItemRequest;
 import com.khahhann.backend.response.ApiResponse;
@@ -10,6 +11,9 @@ import com.khahhann.backend.service.CartService;
 import com.khahhann.backend.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,10 +28,13 @@ public class CartController {
     private UserService userService;
 
     @GetMapping("")
-    public ResponseEntity<Cart> findUserCart(@RequestHeader("Authorization") String jwt) throws UserException {
+    public ResponseEntity<Page<CartItem>> findUserCart(@RequestHeader("Authorization") String jwt,
+                                                       @RequestParam(value = "page", required = false) Integer pageNumber,
+                                                       @RequestParam(value = "pageSize", required = false) Integer pageSize)
+            throws UserException {
         Users user = this.userService.findUserProfileByJwt(jwt);
-        Cart cart = this.cartService.findUserCart(user.getId());
-        return new ResponseEntity<>(cart, HttpStatus.OK);
+        Page<CartItem> cartItemsPage = this.cartService.findUserCart(user.getId(), pageNumber, pageSize);
+        return new ResponseEntity<>(cartItemsPage, HttpStatus.OK);
     }
 
     @PutMapping("/add")

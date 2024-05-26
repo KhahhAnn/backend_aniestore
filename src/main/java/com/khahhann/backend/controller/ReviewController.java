@@ -32,10 +32,14 @@ public class ReviewController {
         return new ResponseEntity<>(review, HttpStatus.CREATED);
     }
     @GetMapping("/product/{productId}")
-    public ResponseEntity<List<Review>> getProductRatings(@RequestHeader("Authorization") String jwt,
-                                                          @PathVariable Long productId) throws UserException {
-        Users user = this.userService.findUserProfileByJwt(jwt);
+    public ResponseEntity<List<Review>> getProductRatings(@PathVariable Long productId)  {
         List<Review> ratingList = this.reviewService.getProductsReview(productId);
         return new ResponseEntity<>(ratingList, HttpStatus.OK);
     }
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<?> getUserReview(@PathVariable Long id)  {
+        Users user = this.reviewService.getUserReview(id);
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+
 }

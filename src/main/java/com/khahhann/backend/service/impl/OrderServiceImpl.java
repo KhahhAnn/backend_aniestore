@@ -3,16 +3,14 @@ package com.khahhann.backend.service.impl;
 import com.khahhann.backend.constant.Status;
 import com.khahhann.backend.exception.OrderException;
 import com.khahhann.backend.model.*;
-import com.khahhann.backend.repository.AddressRepository;
-import com.khahhann.backend.repository.OrderItemRepository;
-import com.khahhann.backend.repository.OrderRepository;
-import com.khahhann.backend.repository.UserRepository;
+import com.khahhann.backend.repository.*;
 import com.khahhann.backend.service.CartService;
 import com.khahhann.backend.service.OrderItemService;
 import com.khahhann.backend.service.OrderService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,13 +24,14 @@ public class OrderServiceImpl implements OrderService {
     private AddressRepository addressRepository;
     private UserRepository userRepository;
     private OrderItemRepository orderItemRepository;
+    private CartRepository cartRepository;
     @Override
     public Order createOrder(Users user, Address shippingAddress) {
         shippingAddress.setUser(user);
         Address address = this.addressRepository.saveAndFlush(shippingAddress);
         user.getAddressList().add(address);
         this.userRepository.saveAndFlush(user);
-        Cart cart = this.cartService.findUserCart(user.getId());
+        Cart cart = this.cartRepository.findByUserId(user.getId());
         List<OrderItem> orderItems = new ArrayList<>();
         for(CartItem item : cart.getCartItem()) {
             OrderItem orderItem = new OrderItem();
@@ -52,9 +51,9 @@ public class OrderServiceImpl implements OrderService {
         createdOrder.setTotalDiscountedPrice(cart.getTotalDiscountedPrice());
         createdOrder.setDiscount(createdOrder.getDiscount());
         createdOrder.setShippingAddress(address);
-        createdOrder.setOrderDate(LocalDateTime.now());
+        createdOrder.setOrderDate(LocalDate.now());
         createdOrder.setOrderStatus(Status.PENDING);
-        createdOrder.setCreatedAt(LocalDateTime.now());
+        createdOrder.setCreatedAt(LocalDate.now());
 
         Order savedOrder = this.orderRepository.saveAndFlush(createdOrder);
         for(OrderItem item : orderItems) {
@@ -66,7 +65,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order createOrderByAddress(Users user, Address shippingAddress) {
-        Cart cart = this.cartService.findUserCart(user.getId());
+        Cart cart = this.cartRepository.findByUserId(user.getId());
         List<OrderItem> orderItems = new ArrayList<>();
         for(CartItem item : cart.getCartItem()) {
             OrderItem orderItem = new OrderItem();
@@ -85,9 +84,9 @@ public class OrderServiceImpl implements OrderService {
         createdOrder.setTotalDiscountedPrice(cart.getTotalDiscountedPrice());
         createdOrder.setDiscount(createdOrder.getDiscount());
         createdOrder.setShippingAddress(shippingAddress);
-        createdOrder.setOrderDate(LocalDateTime.now());
+        createdOrder.setOrderDate(LocalDate.now());
         createdOrder.setOrderStatus(Status.PENDING);
-        createdOrder.setCreatedAt(LocalDateTime.now());
+        createdOrder.setCreatedAt(LocalDate.now());
 
         Order savedOrder = this.orderRepository.saveAndFlush(createdOrder);
         for(OrderItem item : orderItems) {
