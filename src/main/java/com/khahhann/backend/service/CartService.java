@@ -6,8 +6,10 @@ import com.khahhann.backend.model.Cart;
 import com.khahhann.backend.model.CartItem;
 import com.khahhann.backend.model.Users;
 import com.khahhann.backend.request.AddItemRequest;
+import com.khahhann.backend.response.CartResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 
@@ -17,7 +19,8 @@ public interface CartService {
 
     public String addCartItem(Long userId, AddItemRequest req) throws ProductException, UserException;
 
-    public Page<CartItem> findUserCart(Long userId, int pageNumber, int pageSize);
+    public CartResponse findUserCart(Long userId, int pageNumber, int pageSize);
 
     public int countCartItem(Long userId);
+    void updateCartTotals(Long cartId);
 }

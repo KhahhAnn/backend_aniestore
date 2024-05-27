@@ -55,9 +55,6 @@ public class UserServiceImplement implements UserService {
     public Users changePassword(String jwt, ChangePasswordRequest changePasswordRequest) throws UserException {
         if(this.findUserProfileByJwt(jwt) != null) {
             Users existUser = this.findUserProfileByJwt(jwt);
-            String encodeCurrentPass = this.passwordEncoder.encode(changePasswordRequest.getCurrentPassword());
-            System.out.println(changePasswordRequest.getCurrentPassword());
-            System.out.println(encodeCurrentPass);
             if(passwordEncoder.matches(existUser.getPassword(), changePasswordRequest.getCurrentPassword())) {
                 return null;
             }
