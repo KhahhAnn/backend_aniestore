@@ -25,6 +25,7 @@ public class ReviewServiceImpl implements ReviewService {
         Product product = this.productService.findProductById(req.getProductId());
         Review review = new Review();
         review.setReview(req.getReview());
+        review.setStarsNumber(req.getStart());
         review.setUser(user);
         review.setProduct(product);
 

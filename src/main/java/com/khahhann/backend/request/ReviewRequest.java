@@ -10,4 +10,5 @@ import lombok.NoArgsConstructor;
 public class ReviewRequest {
     private Long productId;
     private String review;
+    private Double start;
 }
