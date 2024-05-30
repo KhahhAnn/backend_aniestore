@@ -2,8 +2,11 @@ package com.khahhann.backend.controller;
 
 import com.khahhann.backend.exception.ProductException;
 import com.khahhann.backend.model.Product;
+import com.khahhann.backend.model.Users;
+import com.khahhann.backend.request.AddProductRequest;
 import com.khahhann.backend.request.CreateProductRequest;
 import com.khahhann.backend.response.ApiResponse;
+import com.khahhann.backend.service.AdminProductService;
 import com.khahhann.backend.service.ProductService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +19,9 @@ import java.util.List;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/admin/products")
-@CrossOrigin("http://localhost:3000/")
 public class AdminProductController {
     private ProductService productService;
+    private AdminProductService adminProductService;
 
     @PostMapping("/")
     public ResponseEntity<Product> createProduct(@RequestBody CreateProductRequest req) {
@@ -56,4 +59,20 @@ public class AdminProductController {
         res.setStatus(true);
         return new ResponseEntity<>(res, HttpStatus.CREATED);
     }
+
+    @PostMapping("/add")
+    public Product addProduct(@RequestBody AddProductRequest request) {
+        return this.adminProductService.adminAddProduct(request);
+    }
+
+    @PutMapping("/update")
+    public Product updateProduct(@RequestBody Product product) {
+        return this.adminProductService.adminUpdateProduct(product);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public void updateProduct(@PathVariable Long id) {
+        this.adminProductService.adminDeleteProduct(id);
+    }
+
 }

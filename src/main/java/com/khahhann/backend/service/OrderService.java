@@ -18,9 +18,8 @@ public interface OrderService {
      Order confirmOrder(Long orderId) throws OrderException;
      Order shippedOrder(Long orderId) throws OrderException;
      Order deliveredOrder(Long orderId) throws OrderException;
-     Order cancelOrder(Long orderId) throws OrderException;
+     Order reciveOrderComplete(Long orderId) throws OrderException;
      List<Order> getAllOrder();
      void deleteOrder(Long orderId) throws OrderException;
-
-
+     Order updateOrder(Order order);
 }

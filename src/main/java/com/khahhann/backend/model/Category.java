@@ -6,6 +6,8 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -17,10 +19,9 @@ import java.time.LocalDateTime;
 @Table(name = "category")
 public class Category {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
     @Size(max = 50)
     private String name;
 
@@ -31,8 +32,10 @@ public class Category {
     private int level;
 
     @Column(name = "created_at")
+    @CreationTimestamp
     private LocalDate createdAt;
 
     @Column(name = "updated_at")
+    @UpdateTimestamp
     private LocalDate updatedAt;
 }

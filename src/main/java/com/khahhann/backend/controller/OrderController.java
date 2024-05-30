@@ -47,4 +47,10 @@ public class OrderController {
         Order order = this.orderService.findOrderById(orderId);
         return new ResponseEntity<>(order, HttpStatus.OK);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Order> reciveOrder(@PathVariable("id") Long orderId) throws OrderException {
+        Order order = this.orderService.reciveOrderComplete(orderId);
+        return new ResponseEntity<>(order, HttpStatus.OK);
+    }
 }

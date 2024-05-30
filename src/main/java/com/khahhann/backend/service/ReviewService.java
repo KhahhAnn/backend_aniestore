@@ -13,5 +13,6 @@ public interface ReviewService {
     Review createReview(ReviewRequest req, Users user) throws ProductException;
     List<Review> getProductsReview(Long id);
     Users getUserReview(Long id);
+    void deleteReview(Long id);
 
 }

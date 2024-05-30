@@ -52,7 +52,7 @@ public class OrderServiceImpl implements OrderService {
         createdOrder.setDiscount(createdOrder.getDiscount());
         createdOrder.setShippingAddress(address);
         createdOrder.setOrderDate(LocalDate.now());
-        createdOrder.setOrderStatus(Status.PENDING);
+        createdOrder.setOrderStatus(Status.CHUA_XAC_NHAN_DON);
         createdOrder.setCreatedAt(LocalDate.now());
 
         Order savedOrder = this.orderRepository.saveAndFlush(createdOrder);
@@ -85,7 +85,7 @@ public class OrderServiceImpl implements OrderService {
         createdOrder.setDiscount(createdOrder.getDiscount());
         createdOrder.setShippingAddress(shippingAddress);
         createdOrder.setOrderDate(LocalDate.now());
-        createdOrder.setOrderStatus(Status.PENDING);
+        createdOrder.setOrderStatus(Status.CHUA_XAC_NHAN_DON);
         createdOrder.setCreatedAt(LocalDate.now());
 
         Order savedOrder = this.orderRepository.saveAndFlush(createdOrder);
@@ -113,35 +113,35 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order placedOrder(Long orderId) throws OrderException {
         Order order = this.findOrderById(orderId);
-        order.setOrderStatus(Status.PLACED);
+        order.setOrderStatus(Status.DA_XAC_NHAN_DON);
         return order;
     }
 
     @Override
     public Order confirmOrder(Long orderId) throws OrderException {
         Order order = this.findOrderById(orderId);
-        order.setOrderStatus(Status.CONFIRMED);
+        order.setOrderStatus(Status.DA_XAC_NHAN_DON);
         return order;
     }
 
     @Override
     public Order shippedOrder(Long orderId) throws OrderException {
         Order order = this.findOrderById(orderId);
-        order.setOrderStatus(Status.SHIPPED);
+        order.setOrderStatus(Status.DON_HANG_DANG_VAN_CHUYEN);
         return order;
     }
 
     @Override
     public Order deliveredOrder(Long orderId) throws OrderException {
         Order order = this.findOrderById(orderId);
-        order.setOrderStatus(Status.DELIVERED);
+        order.setOrderStatus(Status.DON_HANG_DANG_VAN_CHUYEN);
         return order;
     }
 
     @Override
-    public Order cancelOrder(Long orderId) throws OrderException {
+    public Order reciveOrderComplete(Long orderId) throws OrderException {
         Order order = this.findOrderById(orderId);
-        order.setOrderStatus(Status.CANCELLED);
+        order.setOrderStatus(Status.NHAN_HANG_THANH_CONG);
         return order;
     }
 
@@ -155,5 +155,15 @@ public class OrderServiceImpl implements OrderService {
     public void deleteOrder(Long orderId) throws OrderException {
         this.orderRepository.deleteById(orderId);
 
+    }
+
+    @Override
+    public Order updateOrder(Order order) {
+        Order exitsOrder = this.orderRepository.getReferenceById(order.getId());
+        if(exitsOrder == null) {
+            return null;
+        }
+        exitsOrder.setOrderStatus(order.getOrderStatus());
+        return this.orderRepository.saveAndFlush(exitsOrder);
     }
 }

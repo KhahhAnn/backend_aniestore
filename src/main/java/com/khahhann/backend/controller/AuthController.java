@@ -1,9 +1,7 @@
 package com.khahhann.backend.controller;
 
 import com.khahhann.backend.config.JwtProvider;
-import com.khahhann.backend.exception.UserException;
 import com.khahhann.backend.model.Users;
-import com.khahhann.backend.repository.UserRepository;
 import com.khahhann.backend.request.LoginRequest;
 import com.khahhann.backend.response.AuthResponse;
 import com.khahhann.backend.service.AccountService;

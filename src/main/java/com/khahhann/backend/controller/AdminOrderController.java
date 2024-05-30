@@ -2,6 +2,7 @@ package com.khahhann.backend.controller;
 
 import com.khahhann.backend.exception.OrderException;
 import com.khahhann.backend.model.Order;
+import com.khahhann.backend.model.Users;
 import com.khahhann.backend.response.ApiResponse;
 import com.khahhann.backend.service.OrderService;
 import lombok.AllArgsConstructor;
@@ -14,7 +15,6 @@ import java.util.List;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/admin/orders")
-@CrossOrigin("http://localhost:3000/")
 public class AdminOrderController {
     private OrderService orderService;
     @GetMapping("")
@@ -38,11 +38,7 @@ public class AdminOrderController {
         Order order = this.orderService.deliveredOrder(orderId);
         return new ResponseEntity<>(order, HttpStatus.OK);
     }
-    @PutMapping("/{orderId}/cancel")
-    public ResponseEntity<Order> cancelOrderHandle(@PathVariable Long orderId, @RequestHeader("Authorization") String jwt) throws OrderException {
-        Order order = this.orderService.cancelOrder(orderId);
-        return new ResponseEntity<>(order, HttpStatus.OK);
-    }
+
     @DeleteMapping("/{orderId}/delete")
     public ResponseEntity<ApiResponse> deleteOrderHandle(@PathVariable Long orderId, @RequestHeader("Authorization") String jwt) throws OrderException {
         this.orderService.deleteOrder(orderId);
@@ -50,5 +46,9 @@ public class AdminOrderController {
         res.setMessage("Order deleted successfully");
         res.setStatus(true);
         return new ResponseEntity<ApiResponse>(res, HttpStatus.OK);
+    }
+    @PutMapping()
+    public Order updateOrder(@RequestBody Order order) {
+        return this.orderService.updateOrder(order);
     }
 }
