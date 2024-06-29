@@ -1,9 +1,11 @@
 package com.khahhann.backend.service.impl;
 
+import com.khahhann.backend.model.Roles;
 import com.khahhann.backend.model.Users;
 import com.khahhann.backend.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -25,6 +27,10 @@ public class CustomerUserServiceImpl implements UserDetailsService {
             throw new UsernameNotFoundException("user not found with email - " + username);
         }
         List<GrantedAuthority> authorities = new ArrayList<>();
+        for (Roles role : user.getRolesList()) {
+            authorities.add(new SimpleGrantedAuthority(role.getRoleName()));
+        }
+
         return new User(user.getEmail(), user.getPassword(), authorities);
     }
 }

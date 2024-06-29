@@ -12,11 +12,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @RestController
@@ -47,7 +51,10 @@ public class AuthController {
         Authentication authentication = authenticate(username, password);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = this.jwtProvider.generateToken(authentication);
-        AuthResponse authResponse = new AuthResponse(token, "Login success");
+        List<String> permissions = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+        AuthResponse authResponse = new AuthResponse(token, "Login success", permissions);
         return new ResponseEntity<AuthResponse>(authResponse, HttpStatus.CREATED);
     }
 

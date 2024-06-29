@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 @Service
 @AllArgsConstructor
@@ -46,6 +47,7 @@ public class OrderServiceImpl implements OrderService {
         }
         Order createdOrder = new Order();
         createdOrder.setUser(user);
+        createdOrder.setOrderId(String.valueOf(new Random().nextInt(20000)));
         createdOrder.setOrderItems(orderItems);
         createdOrder.setTotalItem(cart.getTotalItem());
         createdOrder.setTotalDiscountedPrice(cart.getTotalDiscountedPrice());
@@ -79,6 +81,7 @@ public class OrderServiceImpl implements OrderService {
         }
         Order createdOrder = new Order();
         createdOrder.setUser(user);
+        createdOrder.setOrderId(String.valueOf(new Random().nextInt(20000)));
         createdOrder.setOrderItems(orderItems);
         createdOrder.setTotalItem(cart.getTotalItem());
         createdOrder.setTotalDiscountedPrice(cart.getTotalDiscountedPrice());
@@ -142,6 +145,7 @@ public class OrderServiceImpl implements OrderService {
     public Order reciveOrderComplete(Long orderId) throws OrderException {
         Order order = this.findOrderById(orderId);
         order.setOrderStatus(Status.NHAN_HANG_THANH_CONG);
+        this.orderRepository.saveAndFlush(order);
         return order;
     }
 
