@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -106,7 +107,13 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Page<Product> getAllProduct(String category, List<String> colors, List<String> sizes, Integer minPrice, Integer maxPrice, Integer minDiscount, String sort, String stock, Integer pageNumber, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
-        List<Product> products = this.productRepository.filterProducts(category, minPrice, maxPrice, minDiscount, sort);
+        List<Product> products = new ArrayList<>();
+
+        if ("all".equalsIgnoreCase(category)) {
+            products = this.productRepository.findAll();
+        } else {
+            products = this.productRepository.filterProducts(category, minPrice, maxPrice, minDiscount, sort);
+        }
         if(!colors.isEmpty()) {
             products = products.stream().filter(p -> colors.stream().anyMatch(c -> c.equalsIgnoreCase(p.getColor())))
                     .collect(Collectors.toList());

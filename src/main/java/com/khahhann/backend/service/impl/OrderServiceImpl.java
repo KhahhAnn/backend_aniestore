@@ -168,6 +168,7 @@ public class OrderServiceImpl implements OrderService {
             return null;
         }
         exitsOrder.setOrderStatus(order.getOrderStatus());
+        exitsOrder.setIsPayment(order.getIsPayment());
         return this.orderRepository.saveAndFlush(exitsOrder);
     }
 }

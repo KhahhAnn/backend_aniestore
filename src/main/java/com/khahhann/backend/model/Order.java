@@ -46,6 +46,8 @@ public class Order {
 
     private String orderStatus;
 
+    private String isPayment = "Đã thanh toán";
+
     private int totalItem;
 
     @Column(name = "created_at")

@@ -1,8 +1,11 @@
 package com.khahhann.backend.controller;
 
 import com.khahhann.backend.config.VnpayConfig;
+import com.khahhann.backend.model.Order;
+import com.khahhann.backend.repository.OrderRepository;
 import com.khahhann.backend.response.VnpayPaymentResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +22,8 @@ import java.util.*;
 @RestController
 @RequestMapping("/api/payment")
 public class VnpayController {
+    @Autowired
+    private OrderRepository orderRepository;
     @GetMapping("/create_payment/{total}")
     public ResponseEntity<?> createPayment(HttpServletRequest req,@PathVariable Integer total) throws UnsupportedEncodingException {
         String orderType = "other";
@@ -85,5 +90,12 @@ public class VnpayController {
         vnpayPaymentResponse.setMessage("Successfully");
         vnpayPaymentResponse.setURL(paymentUrl);
         return ResponseEntity.status(HttpStatus.OK).body(vnpayPaymentResponse);
+    }
+    @GetMapping("/payment_cod/{id}")
+    public ResponseEntity<?> createPaymentCod(@PathVariable("id") Long id) {
+        Optional<Order> order = this.orderRepository.findById(id);
+        order.get().setIsPayment("Chưa thanh toán");
+        this.orderRepository.saveAndFlush(order.get());
+        return ResponseEntity.status(HttpStatus.OK).body("Chọn phương thức thanh toán thành công");
     }
 }
