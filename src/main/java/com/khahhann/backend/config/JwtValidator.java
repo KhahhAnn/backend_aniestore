@@ -24,20 +24,26 @@ public class JwtValidator extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String jwt = request.getHeader(JwtConstant.JWT_HEADER);
-        if(jwt != null) {
-            jwt = jwt.substring(7);
-            try {
-                SecretKey key = Keys.hmacShaKeyFor(JwtConstant.SECRET_KEY.getBytes());
-                Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt).getBody();
-                String email = String.valueOf(claims.get("email"));
-                String authorities = String.valueOf(claims.get("authorities"));
-                List<GrantedAuthority> auths = AuthorityUtils.commaSeparatedStringToAuthorityList(authorities);
-                Authentication authentication = new UsernamePasswordAuthenticationToken(email, null, auths);
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            } catch (Exception ex) {
-                throw new BadCredentialsException("inalid token... from jwt validation");
-            }
+
+        // Nếu request không có token, bỏ qua kiểm tra và tiếp tục request bình thường
+        if (jwt == null || !jwt.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response);
+            return;
         }
+        try {
+            jwt = jwt.substring(7); // Bỏ "Bearer " ra khỏi token
+            SecretKey key = Keys.hmacShaKeyFor(JwtConstant.SECRET_KEY.getBytes());
+            Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt).getBody();
+            String email = String.valueOf(claims.get("email"));
+            String authorities = String.valueOf(claims.get("authorities"));
+            List<GrantedAuthority> auths = AuthorityUtils.commaSeparatedStringToAuthorityList(authorities);
+            Authentication authentication = new UsernamePasswordAuthenticationToken(email, null, auths);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        } catch (Exception ex) {
+            // Nếu token sai, không ném lỗi ngay mà chỉ bỏ qua xác thực
+            SecurityContextHolder.clearContext();
+        }
+        // Tiếp tục xử lý request
         filterChain.doFilter(request, response);
     }
 }
