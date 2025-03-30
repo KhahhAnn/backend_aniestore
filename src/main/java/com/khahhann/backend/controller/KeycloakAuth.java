@@ -74,14 +74,15 @@ public class KeycloakAuth {
     @PostMapping("/token")
     public ResponseEntity<?> exchangeCode(@RequestBody CodeExchangeRequest request) {
         try {
-            String tokenUrl = authServerUrl + "/realms/" + realm + "/protocol/openid-connect/token";
+            String tokenUrl = "http://localhost:9000/realms/spring-boot-code/protocol/openid-connect/token";
 
             MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
             params.add("grant_type", "authorization_code");
+            params.add("client_id", "authenticationClientId");
+            params.add("client_secret", "2Q0fzIMr6yEpEv3NkbL3XxWSTFz8I0fn");
             params.add("code", request.getCode());
-            params.add("client_id", clientId);
-            params.add("client_secret", clientSecret);
             params.add("redirect_uri", request.getRedirectUri());
+            params.add("code_verifier", request.getCodeVerifier());
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -94,7 +95,7 @@ public class KeycloakAuth {
 
             return ResponseEntity.ok(response.getBody());
         } catch (Exception e) {
-            return ResponseEntity.status(401).body(Map.of(
+            return ResponseEntity.status(400).body(Map.of(
                     "error", "token_exchange_failed",
                     "error_description", e.getMessage()
             ));

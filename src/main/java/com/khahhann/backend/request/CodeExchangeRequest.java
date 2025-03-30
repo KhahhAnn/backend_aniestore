@@ -5,5 +5,6 @@ import lombok.Data;
 @Data
 public class CodeExchangeRequest {
     private String code;
+    private String codeVerifier;
     private String redirectUri;
 }

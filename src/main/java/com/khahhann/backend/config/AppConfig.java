@@ -34,18 +34,18 @@ public class AppConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http, CustomOAuth2UserService customOAuth2UserService, OAuth2SuccessHandler oAuth2SuccessHandler) throws Exception {
         http.authorizeHttpRequests(
                 config -> config
+                        .requestMatchers(HttpMethod.POST, "/auth/token").permitAll()
                         .requestMatchers(HttpMethod.GET, Endpoints.ADMIN_GET_ENDPOINTS).hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, Endpoints.ADMIN_POST_ENDPOINTS).hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, Endpoints.ADMIN_DELETE_ENDPOINTS).hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/products").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/discount/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
                         .anyRequest().permitAll()
         );
-        http.oauth2Login(oauth2 -> oauth2.loginPage("/").userInfoEndpoint(userInfo -> userInfo.oidcUserService(this.oidcUserService())))
-                .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(authenticationConverter())))
-                .oauth2Client(withDefaults());
         http.addFilterBefore(new JwtValidator(), BasicAuthenticationFilter.class);
+        http.oauth2Login(withDefaults());
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.httpBasic(Customizer.withDefaults());
         http.csrf(csrf -> csrf.disable());
@@ -59,15 +59,11 @@ public class AppConfig {
 
     Converter<Jwt, AbstractAuthenticationToken> authenticationConverter() {
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
-        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(
-                new Converter<Jwt, Collection<GrantedAuthority>>() {
-                    @Override
-                    public Collection<GrantedAuthority> convert(Jwt jwt) {
-                        return SecurityUtils.extractAuthorityFromClaims(jwt.getClaims());
-                    }
-                }
-        );
-        jwtAuthenticationConverter.setPrincipalClaimName(PREFERRED_USERNAME);
+        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwt -> {
+            System.out.println("JWT Claims: " + jwt.getClaims());
+            return SecurityUtils.extractAuthorityFromClaims(jwt.getClaims());
+        });
+        jwtAuthenticationConverter.setPrincipalClaimName("email");
         return jwtAuthenticationConverter;
     }
 
