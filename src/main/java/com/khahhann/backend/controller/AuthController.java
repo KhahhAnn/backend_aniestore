@@ -1,10 +1,12 @@
 package com.khahhann.backend.controller;
 
 import com.khahhann.backend.config.JwtProvider;
+import com.khahhann.backend.exception.UserException;
 import com.khahhann.backend.model.Users;
 import com.khahhann.backend.request.LoginRequest;
 import com.khahhann.backend.response.AuthResponse;
 import com.khahhann.backend.service.AccountService;
+import com.khahhann.backend.service.UserService;
 import com.khahhann.backend.service.impl.CustomerUserServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -32,6 +34,7 @@ public class AuthController {
     private JwtProvider jwtProvider;
     private PasswordEncoder passwordEncoder;
 
+
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Validated @RequestBody Users user) {
         ResponseEntity<?> response = this.accountService.register(user);
@@ -43,6 +46,7 @@ public class AuthController {
         ResponseEntity<?> response = this.accountService.activeAccount(email, activeCode);
         return response;
     }
+
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> loginUserHandle(@RequestBody LoginRequest loginRequest) {

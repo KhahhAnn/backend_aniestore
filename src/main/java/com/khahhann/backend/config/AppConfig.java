@@ -31,7 +31,7 @@ import static org.springframework.security.oauth2.core.oidc.StandardClaimNames.P
 @Configuration
 public class AppConfig {
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, CustomOAuth2UserService customOAuth2UserService, OAuth2SuccessHandler oAuth2SuccessHandler) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(
                 config -> config
                         .requestMatchers(HttpMethod.POST, "/auth/token").permitAll()
@@ -65,15 +65,6 @@ public class AppConfig {
         });
         jwtAuthenticationConverter.setPrincipalClaimName("email");
         return jwtAuthenticationConverter;
-    }
-
-    OAuth2UserService<OidcUserRequest, OidcUser> oidcUserService() {
-        final OidcUserService delegate = new OidcUserService();
-
-        return userRequest -> {
-            OidcUser oidcUser = delegate.loadUser(userRequest);
-            return new DefaultOidcUser(oidcUser.getAuthorities(), oidcUser.getIdToken(), oidcUser.getUserInfo(), PREFERRED_USERNAME);
-        };
     }
 
 }

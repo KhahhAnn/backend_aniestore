@@ -97,4 +97,13 @@ public class UserServiceImplement implements UserService {
         existUser.setMobile(user.getMobile());
         return this.userRepository.saveAndFlush(existUser);
     }
+
+    @Override
+    public Users findUserEmail(String email) throws UserException {
+        Users user = this.userRepository.findByEmail(email);
+        if(user == null) {
+            throw new UserException("user not found with email - " + email);
+        }
+        return user;
+    }
 }

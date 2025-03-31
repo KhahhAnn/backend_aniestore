@@ -18,4 +18,5 @@ public interface UserService {
     Users changePassword(String jwt, ChangePasswordRequest changePasswordRequest) throws  UserException;
     ApiResponse addNewUser(Users user);
     Users updateUser(Users user);
+    Users findUserEmail(String email) throws UserException;
 }
